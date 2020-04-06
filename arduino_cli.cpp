@@ -28,11 +28,11 @@
 void showHelp()
 {
 	printf("Usage:\n");
-	printf("arduino_usb_linux on\n");
-	printf("arduino_usb_linux off\n");
-	printf("arduino_usb_linux out\n");
-	printf("arduino_usb_linux write\n");
-	printf("arduino_usb_linux in <string>\n");
+	printf("arduino_cli on\n");
+	printf("arduino_cli off\n");
+	printf("arduino_cli out\n");
+	printf("arduino_cli write\n");
+	printf("arduino_cli in <string>\n");
 	exit(1);
 }
 
