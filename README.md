@@ -1,6 +1,6 @@
 ## Arduino CLI
 
-Commandline communication with Atmel AtMega devices with no previous USB support.
+Commandline USB communication with Atmel AtMega devices with no previous USB support.
 USB protocol is fully emulated by Software.
 
 
