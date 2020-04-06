@@ -18,7 +18,6 @@
 #include <chrono>
 #include <ctime>
 
-// same as in main.c
 #define USB_LED_OFF 0
 #define USB_LED_ON  1
 #define USB_DATA_OUT 2
@@ -142,7 +141,7 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
 	auto start = std::chrono::high_resolution_clock::now();
-	handle = usbOpenDevice(0x16C0, "Galos Industries", 0x05DC, "DotPhat");
+	handle = usbOpenDevice(0x16C0, const_cast<char*>("arduino_usb_linux"), 0x05DC, const_cast<char*>("DotPhat"));
 
 	if (handle == NULL) {
 		fprintf(stderr, "Could not find USB device!\n");
@@ -162,7 +161,6 @@ int main(int argc, char **argv) {
 		nBytes = usb_control_msg(handle,
 				USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 				USB_DATA_OUT, 0, 0, (char *) buffer, sizeof(buffer), 5000);
-//		printf("Got %d bytes: %s\n", nBytes, buffer);
 		std::cout << "Got " << nBytes << " bytes: " << std::endl;
 		for (int i = 0; i < nBytes; ++i) {
 			if (i > 0 && 0 == i % 8)

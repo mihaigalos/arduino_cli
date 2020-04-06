@@ -13,7 +13,7 @@ DUDEFLAGS = -p atmega328p -c usbtiny -v
 OBJECTS = usbdrv/usbdrv.o usbdrv/oddebug.o usbdrv/usbdrvasm.o main.o
 
 # Command-line client
-CMDLINE = usbtest.exe
+CMDLINE = arduino_usb_linux.exe
 
 # By default, build the firmware and command-line client, but do not flash
 all: main.hex $(CMDLINE)
@@ -22,13 +22,13 @@ all: main.hex $(CMDLINE)
 flash: main.hex
 	$(DUDE) $(DUDEFLAGS) -U flash:w:$<
 
-# One-liner to compile the command-line client from usbtest.c
-$(CMDLINE): usbtest.cpp
-	g++ -std=c++1y -I ./libusb/include -lusb-1.0 -O -Wall usbtest.cpp ./libusb/libusb_dyn.c -o usbtest
+# One-liner to compile the command-line client from arduino_usb_linux.c
+$(CMDLINE): arduino_usb_linux.cpp
+	g++ -std=c++1y -Wl,--no-as-needed -ldl -O -Wall arduino_usb_linux.cpp ./libusb/libusb_dyn.c -o arduino_usb_linux
 
 # Housekeeping if you want it
 clean:
-	$(RM) *.o *.hex *.elf usbdrv/*.o *.exe
+	$(RM) *.o *.hex *.elf usbdrv/*.o arduino_usb_linux
 
 # From .elf file to .hex
 %.hex: %.elf
