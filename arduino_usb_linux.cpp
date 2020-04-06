@@ -52,8 +52,8 @@ public:
 				}
 
 				// get vendor name
-				if (getDescriptorString(handle, dev->descriptor.iManufacturer,
-										0x0409, devVendor, sizeof(devVendor)) < 0)
+				if (getDeviceIdDescriptor(handle, dev->descriptor.iManufacturer,
+										  0x0409, devVendor, sizeof(devVendor)) < 0)
 				{
 					fprintf(stderr,
 							"Warning: cannot query manufacturer for device: %s\n",
@@ -63,8 +63,8 @@ public:
 				}
 
 				// get product name
-				if (getDescriptorString(handle, dev->descriptor.iProduct, 0x0409,
-										devProduct, sizeof(devVendor)) < 0)
+				if (getDeviceIdDescriptor(handle, dev->descriptor.iProduct, 0x0409,
+										  devProduct, sizeof(devVendor)) < 0)
 				{
 					fprintf(stderr,
 							"Warning: cannot query product for device: %s\n",
@@ -94,8 +94,8 @@ public:
 
 private:
 	// used to get descriptor strings for device identification
-	static int getDescriptorString(usb_dev_handle *dev, int index, int langid,
-								   char *buf, int buflen)
+	static int getDeviceIdDescriptor(usb_dev_handle *dev, int index, int langid,
+									 char *buf, int buflen)
 	{
 		char buffer[256];
 		int rval, i;
@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 		showHelp();
 	}
 	auto start = std::chrono::high_resolution_clock::now();
-	handle = USBDevice::open(0x16C0, const_cast<char *>("arduino_usb_linux"), 0x05DC, const_cast<char *>("DotPhat"));
+	handle = USBDevice::open(0x16C0, const_cast<char *>(""), 0x05DC, const_cast<char *>("DotPhat"));
 
 	if (handle == NULL)
 	{
