@@ -73,6 +73,11 @@ USB_PUBLIC uint8_t onReceiveControlMessage(uint8_t data[8])
 	return 0;
 }
 
+uint8_t receivedAllBytes(uint8_t dataReceived, uint8_t dataLength)
+{
+	return (dataReceived == dataLength);
+}
+
 USB_PUBLIC uint8_t onDataFromPCtoDevice(uint8_t *data, uint8_t len)
 {
 	for (uint8_t i = 0; dataReceived < dataLength && i < len; i++, dataReceived++)
@@ -80,7 +85,7 @@ USB_PUBLIC uint8_t onDataFromPCtoDevice(uint8_t *data, uint8_t len)
 		replyBuf[dataReceived] = data[i];
 	}
 
-	return (dataReceived == dataLength); // 1 if we received it all, 0 if not
+	return receivedAllBytes(dataReceived, dataLength);
 }
 
 void enumerateUSB()
