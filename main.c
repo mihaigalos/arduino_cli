@@ -124,7 +124,7 @@ int main()
 										   // occured during SYNC
 		}
 
-		wdt_reset(); // keep the watchdog happy
+		wdt_reset();
 		usbPoll();
 	}
 
