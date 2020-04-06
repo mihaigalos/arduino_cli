@@ -25,11 +25,9 @@
 class USBDevice
 {
 public:
-	static usb_dev_handle *usbOpenDevice(int vendor, char *vendorName, int product,
-										 char *productName)
+	static usb_dev_handle *open(int vendor, char *vendorName, int product,
+								char *productName)
 	{
-		struct usb_bus *bus;
-		struct usb_device *dev;
 		char devVendor[256], devProduct[256];
 
 		usb_dev_handle *handle = NULL;
@@ -38,9 +36,9 @@ public:
 		usb_find_busses();
 		usb_find_devices();
 
-		for (bus = usb_get_busses(); bus; bus = bus->next)
+		for (auto bus = usb_get_busses(); bus; bus = bus->next)
 		{
-			for (dev = bus->devices; dev; dev = dev->next)
+			for (auto dev = bus->devices; dev; dev = dev->next)
 			{
 				if (dev->descriptor.idVendor != vendor || dev->descriptor.idProduct != product)
 					continue;
@@ -54,8 +52,8 @@ public:
 				}
 
 				// get vendor name
-				if (usbGetDescriptorString(handle, dev->descriptor.iManufacturer,
-										   0x0409, devVendor, sizeof(devVendor)) < 0)
+				if (getDescriptorString(handle, dev->descriptor.iManufacturer,
+										0x0409, devVendor, sizeof(devVendor)) < 0)
 				{
 					fprintf(stderr,
 							"Warning: cannot query manufacturer for device: %s\n",
@@ -65,8 +63,8 @@ public:
 				}
 
 				// get product name
-				if (usbGetDescriptorString(handle, dev->descriptor.iProduct, 0x0409,
-										   devProduct, sizeof(devVendor)) < 0)
+				if (getDescriptorString(handle, dev->descriptor.iProduct, 0x0409,
+										devProduct, sizeof(devVendor)) < 0)
 				{
 					fprintf(stderr,
 							"Warning: cannot query product for device: %s\n",
@@ -96,8 +94,8 @@ public:
 
 private:
 	// used to get descriptor strings for device identification
-	static int usbGetDescriptorString(usb_dev_handle *dev, int index, int langid,
-									  char *buf, int buflen)
+	static int getDescriptorString(usb_dev_handle *dev, int index, int langid,
+								   char *buf, int buflen)
 	{
 		char buffer[256];
 		int rval, i;
@@ -158,7 +156,7 @@ int main(int argc, char **argv)
 		showHelp();
 	}
 	auto start = std::chrono::high_resolution_clock::now();
-	handle = USBDevice::usbOpenDevice(0x16C0, const_cast<char *>("arduino_usb_linux"), 0x05DC, const_cast<char *>("DotPhat"));
+	handle = USBDevice::open(0x16C0, const_cast<char *>("arduino_usb_linux"), 0x05DC, const_cast<char *>("DotPhat"));
 
 	if (handle == NULL)
 	{
