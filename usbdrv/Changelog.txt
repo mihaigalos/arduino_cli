@@ -264,7 +264,7 @@ Scroll down to the bottom to see the most recent changes.
 
   - Removed libusb-win32 dependency for hid-data example in Makefile.windows.
     It was never required and confused many people.
-  - Added extern uchar usbRxToken to usbdrv.h.
+  - Added extern uint8_t usbRxToken to usbdrv.h.
   - Integrated a module with CRC checks at 18 MHz by Lukas Schrittwieser.
 
 * Release 2009-03-23

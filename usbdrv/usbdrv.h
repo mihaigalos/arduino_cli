@@ -141,8 +141,8 @@
  */
 
 #ifndef __ASSEMBLER__
-#ifndef uchar
-#define uchar unsigned char
+#ifndef uint8_t
+#define uint8_t unsigned char
 #endif
 #ifndef schar
 #define schar signed char
@@ -152,10 +152,10 @@
 #if USB_CFG_LONG_TRANSFERS /* if more than 254 bytes transfer size required */
 #define usbMsgLen_t unsigned
 #else
-#define usbMsgLen_t uchar
+#define usbMsgLen_t uint8_t
 #endif
 /* usbMsgLen_t is the data type used for transfer lengths. By default, it is
- * defined to uchar, allowing a maximum of 254 bytes (255 is reserved for
+ * defined to uint8_t, allowing a maximum of 254 bytes (255 is reserved for
  * USB_NO_MSG below). If the usbconfig.h defines USB_CFG_LONG_TRANSFERS to 1,
  * a 16 bit data type is used, allowing up to 16384 bytes (the rest is used
  * for flags in the descriptor configuration).
@@ -178,12 +178,12 @@ USB_PUBLIC void usbPoll(void);
  * Please note that debug outputs through the UART take ~ 0.5ms per byte
  * at 19200 bps.
  */
-extern uchar *usbMsgPtr;
+extern uint8_t *usbMsgPtr;
 /* This variable may be used to pass transmit data to the driver from the
  * implementation of onDataFromPCtoDevice(). It is also used internally by the
  * driver for standard control requests.
  */
-USB_PUBLIC usbMsgLen_t usbFunctionSetup(uchar data[8]);
+USB_PUBLIC usbMsgLen_t usbFunctionSetup(uint8_t data[8]);
 /* This function is called when the driver receives a SETUP transaction from
  * the host which is not answered by the driver itself (in practice: class and
  * vendor requests). All control transfers start with a SETUP transaction where
@@ -217,7 +217,7 @@ USB_PUBLIC usbMsgLen_t usbFunctionDescriptor(struct usbRequest *rq);
  * data. See the documentation of usbFunctionSetup() above for more info.
  */
 #if USB_CFG_HAVE_INTRIN_ENDPOINT
-USB_PUBLIC void usbSetInterrupt(uchar *data, uchar len);
+USB_PUBLIC void usbSetInterrupt(uint8_t *data, uint8_t len);
 /* This function sets the message which will be sent during the next interrupt
  * IN transfer. The message is copied to an internal buffer and must not exceed
  * a length of 8 bytes. The message may be 0 bytes long just to indicate the
@@ -230,7 +230,7 @@ USB_PUBLIC void usbSetInterrupt(uchar *data, uchar len);
  * message already buffered will be lost.
  */
 #if USB_CFG_HAVE_INTRIN_ENDPOINT3
-USB_PUBLIC void usbSetInterrupt3(uchar *data, uchar len);
+USB_PUBLIC void usbSetInterrupt3(uint8_t *data, uint8_t len);
 #define usbInterruptIsReady3() (usbTxLen3 & 0x10)
 /* Same as above for endpoint 3 */
 #endif
@@ -246,7 +246,7 @@ USB_PUBLIC void usbSetInterrupt3(uchar *data, uchar len);
  */
 #endif /* USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH */
 #if USB_CFG_IMPLEMENT_FN_WRITE
-USB_PUBLIC uchar onDataFromPCtoDevice(uchar *data, uchar len);
+USB_PUBLIC uint8_t onDataFromPCtoDevice(uint8_t *data, uint8_t len);
 /* This function is called by the driver to provide a control transfer's
  * payload data (control-out). It is called in chunks of up to 8 bytes. The
  * total count provided in the current control transfer can be obtained from
@@ -264,7 +264,7 @@ USB_PUBLIC uchar onDataFromPCtoDevice(uchar *data, uchar len);
  */
 #endif /* USB_CFG_IMPLEMENT_FN_WRITE */
 #if USB_CFG_IMPLEMENT_FN_READ
-USB_PUBLIC uchar usbFunctionRead(uchar *data, uchar len);
+USB_PUBLIC uint8_t usbFunctionRead(uint8_t *data, uint8_t len);
 /* This function is called by the driver to ask the application for a control
  * transfer's payload data (control-in). It is called in chunks of up to 8
  * bytes each. You should copy the data to the location given by 'data' and
@@ -276,9 +276,9 @@ USB_PUBLIC uchar usbFunctionRead(uchar *data, uchar len);
  */
 #endif /* USB_CFG_IMPLEMENT_FN_READ */
 
-extern uchar usbRxToken; /* may be used in onDataFromPCtoDeviceOut() below */
+extern uint8_t usbRxToken; /* may be used in onDataFromPCtoDeviceOut() below */
 #if USB_CFG_IMPLEMENT_FN_WRITEOUT
-USB_PUBLIC void onDataFromPCtoDeviceOut(uchar *data, uchar len);
+USB_PUBLIC void onDataFromPCtoDeviceOut(uint8_t *data, uint8_t len);
 /* This function is called by the driver when data is received on an interrupt-
  * or bulk-out endpoint. The endpoint number can be found in the global
  * variable usbRxToken. You must define USB_CFG_IMPLEMENT_FN_WRITEOUT to 1 in
@@ -306,7 +306,7 @@ USB_PUBLIC void onDataFromPCtoDeviceOut(uchar *data, uchar len);
  *     USB_INTR_ENABLE &= ~(1 << USB_INTR_ENABLE_BIT)
  * or use cli() to disable interrupts globally.
  */
-extern unsigned usbCrc16(unsigned data, uchar len);
+extern unsigned usbCrc16(unsigned data, uint8_t len);
 #define usbCrc16(data, len) usbCrc16((unsigned)(data), len)
 /* This function calculates the binary complement of the data CRC used in
  * USB data packets. The value is used to build raw transmit packets.
@@ -314,7 +314,7 @@ extern unsigned usbCrc16(unsigned data, uchar len);
  * data. We enforce 16 bit calling conventions for compatibility with IAR's
  * tiny memory model.
  */
-extern unsigned usbCrc16Append(unsigned data, uchar len);
+extern unsigned usbCrc16Append(unsigned data, uint8_t len);
 #define usbCrc16Append(data, len) usbCrc16Append((unsigned)(data), len)
 /* This function is equivalent to usbCrc16() above, except that it appends
  * the 2 bytes CRC (lowbyte first) in the 'data' buffer after reading 'len'
@@ -330,7 +330,7 @@ extern unsigned usbMeasureFrameLength(void);
  * This can be used to calibrate the AVR's RC oscillator.
  */
 #endif
-extern uchar usbConfiguration;
+extern uint8_t usbConfiguration;
 /* This value contains the current configuration set by the host. The driver
  * allows setting and querying of this variable with the USB SET_CONFIGURATION
  * and GET_CONFIGURATION requests, but does not use it otherwise.
@@ -338,13 +338,13 @@ extern uchar usbConfiguration;
  * switch on high power parts of the circuit only if the device is configured.
  */
 #if USB_COUNT_SOF
-extern volatile uchar usbSofCount;
+extern volatile uint8_t usbSofCount;
 /* This variable is incremented on every SOF packet. It is only available if
  * the macro USB_COUNT_SOF is defined to a value != 0.
  */
 #endif
 #if USB_CFG_CHECK_DATA_TOGGLING
-extern uchar usbCurrentDataToken;
+extern uint8_t usbCurrentDataToken;
 /* This variable can be checked in onDataFromPCtoDevice() and onDataFromPCtoDeviceOut()
  * to ignore duplicate packets.
  */
@@ -645,8 +645,8 @@ extern
 
 typedef struct usbTxStatus
 {
-	volatile uchar len;
-	uchar buffer[USB_BUFSIZE];
+	volatile uint8_t len;
+	uint8_t buffer[USB_BUFSIZE];
 } usbTxStatus_t;
 
 extern usbTxStatus_t usbTxStatus1, usbTxStatus3;
@@ -657,13 +657,13 @@ extern usbTxStatus_t usbTxStatus1, usbTxStatus3;
 
 typedef union usbWord {
 	unsigned word;
-	uchar bytes[2];
+	uint8_t bytes[2];
 } usbWord_t;
 
 typedef struct usbRequest
 {
-	uchar bmRequestType;
-	uchar bRequest;
+	uint8_t bmRequestType;
+	uint8_t bRequest;
 	usbWord_t wValue;
 	usbWord_t wIndex;
 	usbWord_t wLength;

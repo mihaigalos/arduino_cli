@@ -625,9 +625,9 @@ int main (int argc, char **argv)
 }
 
 // Use the following algorithm to compute CRC values:
-ushort computeCrc(uchar *msg, uchar msgLen)
+ushort computeCrc(uint8_t *msg, uint8_t msgLen)
 {
-    uchar i;
+    uint8_t i;
 	ushort crc = 0xffff;
 	for(i = 0; i < msgLen; i++)
 		crc = usbCrcTable16[lo8(crc) ^ msg[i]] ^ hi8(crc);

@@ -23,8 +23,8 @@
 #define columnCount 31
 #define bytesPercolumn 8
 
-static uchar replyBuf[columnCount * bytesPercolumn] = "Hello, USB!";
-static uchar dataReceived = 0, dataLength = 0;
+static uint8_t replyBuf[columnCount * bytesPercolumn] = "Hello, USB!";
+static uint8_t dataReceived = 0, dataLength = 0;
 
 static uint16_t offset = 0;
 
@@ -38,7 +38,7 @@ void fillBufferFromFlash()
 	offset += sizeof(replyBuf);
 }
 
-USB_PUBLIC uchar onReceiveControlMessage(uchar data[8])
+USB_PUBLIC uint8_t onReceiveControlMessage(uint8_t data[8])
 {
 	usbRequest_t *rq = (void *)data;
 
@@ -61,7 +61,7 @@ USB_PUBLIC uchar onReceiveControlMessage(uchar data[8])
 		replyBuf[10] = rq->wIndex.bytes[1];
 		return 0;
 	case RECEIVE_DATA_FROM_PC:
-		dataLength = (uchar)rq->wLength.word;
+		dataLength = (uint8_t)rq->wLength.word;
 		dataReceived = 0;
 
 		if (dataLength > sizeof(replyBuf))
@@ -73,7 +73,7 @@ USB_PUBLIC uchar onReceiveControlMessage(uchar data[8])
 	return 0;
 }
 
-USB_PUBLIC uchar onDataFromPCtoDevice(uchar *data, uchar len)
+USB_PUBLIC uint8_t onDataFromPCtoDevice(uint8_t *data, uint8_t len)
 {
 	for (uint8_t i = 0; dataReceived < dataLength && i < len; i++, dataReceived++)
 	{
@@ -95,7 +95,7 @@ void enumerateUSB()
 }
 
 void USB_INTR_VECTOR(void);
-USB_PUBLIC uchar usbFunctionSetup(uchar data[8])
+USB_PUBLIC uint8_t usbFunctionSetup(uint8_t data[8])
 {
 	return onReceiveControlMessage(data);
 }

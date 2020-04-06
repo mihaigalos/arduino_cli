@@ -16,30 +16,32 @@
 
 static void uartPutc(char c)
 {
-    while(!(ODDBG_USR & (1 << ODDBG_UDRE)));    /* wait for data register empty */
+    while (!(ODDBG_USR & (1 << ODDBG_UDRE)))
+        ; /* wait for data register empty */
     ODDBG_UDR = c;
 }
 
-static uchar    hexAscii(uchar h)
+static uint8_t hexAscii(uint8_t h)
 {
     h &= 0xf;
-    if(h >= 10)
-        h += 'a' - (uchar)10 - '0';
+    if (h >= 10)
+        h += 'a' - (uint8_t)10 - '0';
     h += '0';
     return h;
 }
 
-static void printHex(uchar c)
+static void printHex(uint8_t c)
 {
     uartPutc(hexAscii(c >> 4));
     uartPutc(hexAscii(c));
 }
 
-void    odDebug(uchar prefix, uchar *data, uchar len)
+void odDebug(uint8_t prefix, uint8_t *data, uint8_t len)
 {
     printHex(prefix);
     uartPutc(':');
-    while(len--){
+    while (len--)
+    {
         uartPutc(' ');
         printHex(*data++);
     }
