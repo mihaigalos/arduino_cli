@@ -3,10 +3,6 @@
  * Pihlajamaa, joonas.pihlajamaa@iki.fi
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 // this is libusb, see http://libusb.sourceforge.net/
 #include <usb.h>
 
@@ -15,6 +11,8 @@
 #include <iomanip>
 #include <chrono>
 #include <ctime>
+
+#include <vector>
 #include <string>
 
 #include "usb_device.h"
@@ -36,16 +34,32 @@ void showHelp()
 	exit(1);
 }
 
+auto argvToVectorOfStrings(int argc, char **argv)
+{
+	std::string current_exec_name = argv[0]; // Name of the current exec program
+	std::vector<std::string> all_args;
+
+	if (argc > 1)
+	{
+		all_args.assign(argv + 1, argv + argc);
+	}
+
+	return all_args;
+}
+
 int main(int argc, char **argv)
 {
 	usb_dev_handle *handle = NULL;
-	int nBytes = 0;
+	size_t nBytes = 0;
 	char buffer[255];
 
 	if (argc < 2)
 	{
 		showHelp();
 	}
+
+	std::vector<std::string> args = argvToVectorOfStrings(argc, argv);
+
 	auto start = std::chrono::high_resolution_clock::now();
 	handle = USBDevice::open(0x16C0, "", 0x05DC, "DotPhat");
 
@@ -55,26 +69,26 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	if (strcmp(argv[1], "on") == 0)
+	if (args[1] == "on")
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 								 LED_ON, 0, 0, (char *)buffer, sizeof(buffer), 5000);
 	}
-	else if (strcmp(argv[1], "off") == 0)
+	else if (args[1] == "off")
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 								 LED_OFF, 0, 0, (char *)buffer, sizeof(buffer), 5000);
 	}
-	else if (strcmp(argv[1], "out") == 0)
+	else if (args[1] == "out")
 	{
 
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 								 SEND_DATA_TO_PC, 0, 0, (char *)buffer, sizeof(buffer), 5000);
 		std::cout << "Got " << nBytes << " bytes: " << std::endl;
-		for (int i = 0; i < nBytes; ++i)
+		for (size_t i = 0; i < nBytes; ++i)
 		{
 			if (i > 0 && 0 == i % 8)
 				std::cout << std::endl;
@@ -87,18 +101,18 @@ int main(int argc, char **argv)
 
 		std::cout << std::dec << std::endl;
 	}
-	else if (strcmp(argv[1], "write") == 0)
+	else if (args[1] == "write")
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
 								 MODIFY_REPLY_BUFFER, 'T' + ('E' << 8), 'S' + ('T' << 8),
 								 (char *)buffer, sizeof(buffer), 5000);
 	}
-	else if (strcmp(argv[1], "in") == 0 && argc > 2)
+	else if (args[1] == "in" && argc > 2)
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_OUT,
-								 RECEIVE_DATA_FROM_PC, 0, 0, argv[2], strlen(argv[2]) + 1, 5000);
+								 RECEIVE_DATA_FROM_PC, 0, 0, const_cast<char *>(args[2].c_str()), strlen(args[2].c_str()) + 1, 5000);
 	}
 
 	if (nBytes < 0)
