@@ -17,116 +17,14 @@
 #include <ctime>
 #include <string>
 
+#include "usb_device.h"
+
 #define LED_OFF 0
 #define LED_ON 1
 #define SEND_DATA_TO_PC 2
 #define MODIFY_REPLY_BUFFER 3
 #define RECEIVE_DATA_FROM_PC 4
 
-class USBDevice
-{
-public:
-	static usb_dev_handle *open(int vendor, const std::string &vendorName, int product,
-								const std::string &productName)
-	{
-		char devVendor[256], devProduct[256];
-
-		usb_dev_handle *handle = NULL;
-
-		usb_init();
-		usb_find_busses();
-		usb_find_devices();
-
-		for (auto bus = usb_get_busses(); bus; bus = bus->next)
-		{
-			for (auto dev = bus->devices; dev; dev = dev->next)
-			{
-				if (dev->descriptor.idVendor != vendor || dev->descriptor.idProduct != product)
-					continue;
-
-				// we need to open the device in order to query strings
-				if (!(handle = usb_open(dev)))
-				{
-					std::cerr << "Warning: cannot open USB device: " << usb_strerror() << "\n";
-					continue;
-				}
-
-				// get vendor name
-				if (getDeviceIdDescriptor(handle, dev->descriptor.iManufacturer,
-										  0x0409, devVendor, sizeof(devVendor)) < 0)
-				{
-					std::cerr << "Warning: cannot query manufacturer for device: " << usb_strerror() << "\n";
-					usb_close(handle);
-					continue;
-				}
-
-				// get product name
-				if (getDeviceIdDescriptor(handle, dev->descriptor.iProduct, 0x0409,
-										  devProduct, sizeof(devVendor)) < 0)
-				{
-					std::cerr << "Warning: cannot query product for device: " << usb_strerror() << "\n";
-					usb_close(handle);
-					continue;
-				}
-
-				std::cout << "Found vendor: " << devVendor << "\n";
-				std::cout << "Found product: " << devProduct << "\n\n";
-
-				if (devProduct == productName)
-					return handle;
-				else
-				{
-					usb_close(handle);
-					std::cerr << "Cannot find usb device from : \nVendor: " << vendorName << "\nProduct: " << productName << "\n\n";
-				}
-			}
-		}
-
-		return NULL;
-	}
-
-private:
-	// used to get descriptor strings for device identification
-	static int getDeviceIdDescriptor(usb_dev_handle *dev, int index, int langid,
-									 char *buf, int buflen)
-	{
-		char buffer[256];
-		int rval, i;
-
-		// make standard request GET_DESCRIPTOR, type string and given index
-		// (e.g. dev->iProduct)
-		rval = usb_control_msg(dev,
-							   USB_TYPE_STANDARD | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-							   USB_REQ_GET_DESCRIPTOR, (USB_DT_STRING << 8) + index, langid,
-							   buffer, sizeof(buffer), 1000);
-
-		if (rval < 0) // error
-			return rval;
-
-		// rval should be bytes read, but buffer[0] contains the actual response size
-		if ((unsigned char)buffer[0] < rval)
-			rval = (unsigned char)buffer[0]; // string is shorter than bytes read
-
-		if (buffer[1] != USB_DT_STRING) // second byte is the data type
-			return 0;					// invalid return type
-
-		// we're dealing with UTF-16LE here so actual chars is half of rval,
-		// and index 0 doesn't count
-		rval /= 2;
-
-		// lossy conversion to ISO Latin1
-		for (i = 1; i < rval && i < buflen; i++)
-		{
-			if (buffer[2 * i + 1] == 0)
-				buf[i - 1] = buffer[2 * i];
-			else
-				buf[i - 1] = '?'; // outside of ISO Latin1 range
-		}
-		buf[i - 1] = 0;
-
-		return i - 1;
-	}
-};
 void showHelp()
 {
 	printf("Usage:\n");
