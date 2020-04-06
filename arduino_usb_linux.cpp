@@ -18,10 +18,10 @@
 #include <chrono>
 #include <ctime>
 
-#define USB_LED_OFF 0
-#define USB_LED_ON 1
+#define LED_OFF 0
+#define LED_ON 1
 #define SEND_DATA_TO_PC 2
-#define USB_DATA_WRITE 3
+#define MODIFY_REPLY_BUFFER 3
 #define RECEIVE_DATA_FROM_PC 4
 
 // used to get descriptor strings for device identification
@@ -163,13 +163,13 @@ int main(int argc, char **argv)
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-								 USB_LED_ON, 0, 0, (char *)buffer, sizeof(buffer), 5000);
+								 LED_ON, 0, 0, (char *)buffer, sizeof(buffer), 5000);
 	}
 	else if (strcmp(argv[1], "off") == 0)
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-								 USB_LED_OFF, 0, 0, (char *)buffer, sizeof(buffer), 5000);
+								 LED_OFF, 0, 0, (char *)buffer, sizeof(buffer), 5000);
 	}
 	else if (strcmp(argv[1], "out") == 0)
 	{
@@ -195,7 +195,7 @@ int main(int argc, char **argv)
 	{
 		nBytes = usb_control_msg(handle,
 								 USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
-								 USB_DATA_WRITE, 'T' + ('E' << 8), 'S' + ('T' << 8),
+								 MODIFY_REPLY_BUFFER, 'T' + ('E' << 8), 'S' + ('T' << 8),
 								 (char *)buffer, sizeof(buffer), 5000);
 	}
 	else if (strcmp(argv[1], "in") == 0 && argc > 2)

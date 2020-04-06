@@ -14,17 +14,17 @@
 
 #include <stdint.h>
 
-#define USB_LED_OFF 0
-#define USB_LED_ON 1
+#define LED_OFF 0
+#define LED_ON 1
 #define SEND_DATA_TO_PC 2
-#define USB_DATA_WRITE 3
+#define MODIFY_REPLY_BUFFER 3
 #define RECEIVE_DATA_FROM_PC 4
 
 #define columnCount 31
 #define bytesPercolumn 8
 
 static uchar replyBuf[columnCount * bytesPercolumn] = "Hello, USB!";
-static uchar dataReceived = 0, dataLength = 0; // for RECEIVE_DATA_FROM_PC
+static uchar dataReceived = 0, dataLength = 0;
 
 static uint16_t offset = 0;
 
@@ -38,34 +38,33 @@ void fillBufferFromFlash()
 	offset += sizeof(replyBuf);
 }
 
-// this gets called when custom control message is received
-USB_PUBLIC uchar onReceiveCustomControlMessage(uchar data[8])
+USB_PUBLIC uchar onReceiveControlMessage(uchar data[8])
 {
 	usbRequest_t *rq = (void *)data;
 
 	switch (rq->bRequest)
 	{
-	case USB_LED_ON:
+	case LED_ON:
 		PORTD &= ~(1 << 0) & ~(1 << 1);
 		return 0;
-	case USB_LED_OFF:
+	case LED_OFF:
 		PORTD |= (1 << 0) | (1 << 1);
 		return 0;
-	case SEND_DATA_TO_PC: // send data to PC
+	case SEND_DATA_TO_PC:
 		fillBufferFromFlash();
 		usbMsgPtr = replyBuf;
 		return sizeof(replyBuf);
-	case USB_DATA_WRITE: // modify reply buffer
+	case MODIFY_REPLY_BUFFER:
 		replyBuf[7] = rq->wValue.bytes[0];
 		replyBuf[8] = rq->wValue.bytes[1];
 		replyBuf[9] = rq->wIndex.bytes[0];
 		replyBuf[10] = rq->wIndex.bytes[1];
 		return 0;
-	case RECEIVE_DATA_FROM_PC: // receive data from PC
+	case RECEIVE_DATA_FROM_PC:
 		dataLength = (uchar)rq->wLength.word;
 		dataReceived = 0;
 
-		if (dataLength > sizeof(replyBuf)) // limit to buffer size
+		if (dataLength > sizeof(replyBuf))
 			dataLength = sizeof(replyBuf);
 
 		return USB_NO_MSG; // onDataFromPCtoDevice will be called now
@@ -98,7 +97,7 @@ void enumerateUSB()
 void USB_INTR_VECTOR(void);
 USB_PUBLIC uchar usbFunctionSetup(uchar data[8])
 {
-	return onReceiveCustomControlMessage(data);
+	return onReceiveControlMessage(data);
 }
 
 int main()

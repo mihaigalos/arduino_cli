@@ -11,7 +11,7 @@ Scroll down to the bottom to see the most recent changes.
   - Various minor optimizations.
 
 2005-04-11:
-  - Changed interface to application: Use onReceiveCustomControlMessage(), usbFunctionRead()
+  - Changed interface to application: Use onReceiveControlMessage(), usbFunctionRead()
     and onDataFromPCtoDevice() now. Added configuration options to choose which
     of these functions to compile in.
   - Assembler module delivers receive data non-inverted now.
