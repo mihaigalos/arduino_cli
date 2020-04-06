@@ -1,13 +1,13 @@
-This is the source code package for AVR ATtiny USB Tutorial by Joonas Pihlajamaa, published at Code and Life blog, http://codeandlife.com:
+## Arduino CLI
 
-http://codeandlife.com/2012/01/22/avr-attiny-usb-tutorial-part-1/
-http://codeandlife.com/2012/01/25/avr-attiny-usb-tutorial-part-2/
-http://codeandlife.com/2012/01/29/avr-attiny-usb-tutorial-part-3/
-http://codeandlife.com/2012/02/04/avr-attiny-usb-tutorial-part-4/
- 
+Commandline communication with Atmel AtMega devices with no previous USB support.
+USB protocol is fully emulated by Software.
 
-The subfolders contain parts of libusb-win32 available at http://sourceforge.net/apps/trac/libusb-win32/wiki and V-USB library available at http://www.obdev.at/avrusb/ and their contents are copyrighted by their respective authors. My productions in the root folder are published under GNU GPL v3 (see License.txt).
 
-I hope you have fun with this project!
+### Credits:
 
-- Joonas Pihlajamaa
+* Joonas Pihlajamaa, published at Code and Life blog, http://codeandlife.com/2012/01/22/avr-attiny-usb-tutorial-part-1/
+* libusb-win32 available at http://sourceforge.net/apps/trac/libusb-win32/wiki
+* V-USB library available at http://www.obdev.at/avrusb/
+
+These works and their contents are copyrighted by their respective authors.
