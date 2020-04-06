@@ -77,14 +77,22 @@ int main(int argc, char** argv)
         nBytes = usb_control_msg(
             handle, USB_TYPE_VENDOR | USB_RECIP_DEVICE | USB_ENDPOINT_IN,
             SEND_DATA_TO_PC, 0, 0, (char*)buffer, sizeof(buffer), 5000);
+
         std::cout << "Got " << nBytes << " bytes: " << std::endl;
+
         for (size_t i = 0; i < nBytes; ++i) {
-            if (i > 0 && 0 == i % 8)
+            if (i > 0 && 0 == i % 8) {
                 std::cout << std::endl;
+            }
+
             auto value = static_cast<uint16_t>(static_cast<uint8_t>(buffer[i]));
+
             std::cout << std::hex << " ";
-            if (value < 16)
+
+            if (value < 16) {
                 std::cout << "0";
+            }
+
             std::cout << value;
         }
 
