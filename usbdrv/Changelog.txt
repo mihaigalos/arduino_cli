@@ -11,8 +11,8 @@ Scroll down to the bottom to see the most recent changes.
   - Various minor optimizations.
 
 2005-04-11:
-  - Changed interface to application: Use usbFunctionSetup(), usbFunctionRead()
-    and usbFunctionWrite() now. Added configuration options to choose which
+  - Changed interface to application: Use onReceiveCustomControlMessage(), usbFunctionRead()
+    and onDataFromPCtoDevice() now. Added configuration options to choose which
     of these functions to compile in.
   - Assembler module delivers receive data non-inverted now.
   - Made register and bit names compatible with more AVR devices.
@@ -57,7 +57,7 @@ Scroll down to the bottom to see the most recent changes.
     always zero sized. This fixes a bug where the host reports an error after
     sending an out transfer to the device, although all data arrived at the
     device.
-  - Updated docs in usbdrv.h to reflect changed API in usbFunctionWrite().
+  - Updated docs in usbdrv.h to reflect changed API in onDataFromPCtoDevice().
 
 * Release 2006-02-20
 
@@ -76,8 +76,8 @@ Scroll down to the bottom to see the most recent changes.
     by making sure that the rx buffer is empty when SETUP tokens are expected.
     We therefore don't pass zero sized data packets from the status phase of
     a transfer to usbPoll(). This change MAY cause troubles if you rely on
-    receiving a less than 8 bytes long packet in usbFunctionWrite() to
-    identify the end of a transfer. usbFunctionWrite() will NEVER be called
+    receiving a less than 8 bytes long packet in onDataFromPCtoDevice() to
+    identify the end of a transfer. onDataFromPCtoDevice() will NEVER be called
     with a zero length.
 
 * Release 2006-03-14
@@ -170,7 +170,7 @@ Scroll down to the bottom to see the most recent changes.
   - Split out common parts of assembler modules into separate include file
   - Made endpoint numbers configurable so that given interface definitions
     can be matched. See USB_CFG_EP3_NUMBER in usbconfig-prototype.h.
-  - Store endpoint number for interrupt/bulk-out so that usbFunctionWriteOut()
+  - Store endpoint number for interrupt/bulk-out so that onDataFromPCtoDeviceOut()
     can handle any number of endpoints.
   - Define usbDeviceConnect() and usbDeviceDisconnect() even if no
     USB_CFG_PULLUP_IOPORTNAME is defined. Directly set D+ and D- to 0 in this
