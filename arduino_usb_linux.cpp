@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <chrono>
 #include <ctime>
+#include <string>
 
 #define LED_OFF 0
 #define LED_ON 1
@@ -25,8 +26,8 @@
 class USBDevice
 {
 public:
-	static usb_dev_handle *open(int vendor, char *vendorName, int product,
-								char *productName)
+	static usb_dev_handle *open(int vendor, const std::string &vendorName, int product,
+								const std::string &productName)
 	{
 		char devVendor[256], devProduct[256];
 
@@ -46,8 +47,7 @@ public:
 				// we need to open the device in order to query strings
 				if (!(handle = usb_open(dev)))
 				{
-					fprintf(stderr, "Warning: cannot open USB device: %s\n",
-							usb_strerror());
+					std::cerr << "Warning: cannot open USB device: " << usb_strerror() << "\n";
 					continue;
 				}
 
@@ -55,9 +55,7 @@ public:
 				if (getDeviceIdDescriptor(handle, dev->descriptor.iManufacturer,
 										  0x0409, devVendor, sizeof(devVendor)) < 0)
 				{
-					fprintf(stderr,
-							"Warning: cannot query manufacturer for device: %s\n",
-							usb_strerror());
+					std::cerr << "Warning: cannot query manufacturer for device: " << usb_strerror() << "\n";
 					usb_close(handle);
 					continue;
 				}
@@ -66,25 +64,20 @@ public:
 				if (getDeviceIdDescriptor(handle, dev->descriptor.iProduct, 0x0409,
 										  devProduct, sizeof(devVendor)) < 0)
 				{
-					fprintf(stderr,
-							"Warning: cannot query product for device: %s\n",
-							usb_strerror());
+					std::cerr << "Warning: cannot query product for device: " << usb_strerror() << "\n";
 					usb_close(handle);
 					continue;
 				}
 
-				fprintf(stdout, "Found vendor: %s\n", devVendor);
-				fprintf(stdout, "Found product: %s\n\n", devProduct);
+				std::cout << "Found vendor: " << devVendor << "\n";
+				std::cout << "Found product: " << devProduct << "\n\n";
 
-				if (/*strcmp(devVendor, vendorName) == 0 && */
-					strcmp(devProduct, productName) == 0)
+				if (devProduct == productName)
 					return handle;
 				else
 				{
 					usb_close(handle);
-					fprintf(stderr,
-							"Cannot find usb device from : \nVendor: %s\nProduct: %s\n\n",
-							vendorName, productName);
+					std::cerr << "Cannot find usb device from : \nVendor: " << vendorName << "\nProduct: " << productName << "\n\n";
 				}
 			}
 		}
@@ -156,7 +149,7 @@ int main(int argc, char **argv)
 		showHelp();
 	}
 	auto start = std::chrono::high_resolution_clock::now();
-	handle = USBDevice::open(0x16C0, const_cast<char *>(""), 0x05DC, const_cast<char *>("DotPhat"));
+	handle = USBDevice::open(0x16C0, "", 0x05DC, "DotPhat");
 
 	if (handle == NULL)
 	{
