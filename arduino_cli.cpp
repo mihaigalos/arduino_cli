@@ -33,7 +33,7 @@ void showHelp()
     exit(1);
 }
 
-auto argvToVectorOfStrings(int argc, char** argv)
+auto argvToVectorOfStrings(int argc, char** argv) -> std::vector<std::string>
 {
     std::string current_exec_name = argv[0]; // Name of the current exec program
     std::vector<std::string> all_args;
