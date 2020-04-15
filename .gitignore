@@ -1,0 +1,5 @@
+bazel-*
+arduino_cli
+*.o
+*.hex
+*.elf
