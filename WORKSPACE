@@ -13,6 +13,14 @@ git_repository(
     remote = "https://github.com/google/googletest",
 )
 
+http_archive(
+    name = "avr_tools",
+    strip_prefix = "tools",
+    urls = [
+        "https://github.com/mihaigalos/bazel-avr-tools/releases/download/v0.0.1/bazel-avr-tools-v0.0.1.zip",
+    ],
+)
+
 new_local_repository(
     name = "system_libs",
     build_file_content = """
