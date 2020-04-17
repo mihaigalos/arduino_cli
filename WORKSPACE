@@ -15,9 +15,9 @@ git_repository(
 
 http_archive(
     name = "avr_tools",
-    strip_prefix = "tools",
+    strip_prefix = "bazel-avr-tools-master",
     urls = [
-        "https://github.com/mihaigalos/bazel-avr-tools/releases/download/v0.0.1/bazel-avr-tools-v0.0.1.zip",
+        "https://github.com/mihaigalos/bazel-avr-tools/archive/master.zip",
     ],
 )
 
