@@ -1,9 +1,3 @@
-/**
- * Code adapted from AVR ATtiny USB Tutorial at http://codeandlife.com/, Joonas
- * Pihlajamaa, joonas.pihlajamaa@iki.fi
- */
-
-// this is libusb, see http://libusb.sourceforge.net/
 #include <usb.h>
 
 #include <chrono>

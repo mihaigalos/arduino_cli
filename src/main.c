@@ -1,8 +1,3 @@
-/**
- * Code adapted from AVR ATtiny USB Tutorial at http://codeandlife.com/, Joonas
- * Pihlajamaa, joonas.pihlajamaa@iki.fi
- */
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/wdt.h>

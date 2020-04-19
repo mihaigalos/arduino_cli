@@ -1,8 +1,3 @@
-/**
- * Code adapted from AVR ATtiny USB Tutorial at http://codeandlife.com/, Joonas
- * Pihlajamaa, joonas.pihlajamaa@iki.fi
- */
-
 #ifndef __USB_DEVICE_H__
 #define __USB_DEVICE_H__
 
