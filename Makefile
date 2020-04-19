@@ -5,12 +5,12 @@ DUDE = avrdude
 
 # If you are not using atmega328p and the USBtiny programmer, 
 # update the lines below to match your configuration
-CFLAGS = -std=c11 -Wall -Os -Iusbdrv -mmcu=atmega328p
+CFLAGS = -std=c11 -Wall -Os -Isrc/usbdrv -mmcu=atmega328p
 OBJFLAGS = -j .text -j .data -O ihex
 DUDEFLAGS = -p atmega328p -c usbtiny -v
 
 # Object files for the firmware (usbdrv/oddebug.o not strictly needed I think)
-OBJECTS = usbdrv/usbdrv.o usbdrv/oddebug.o usbdrv/usbdrvasm.o main.o
+OBJECTS = src/usbdrv/usbdrv.o src/usbdrv/oddebug.o src/usbdrv/usbdrvasm.o src/main.o
 
 # Command-line client
 CMDLINE = arduino_cli.exe
@@ -23,12 +23,12 @@ flash: main.hex
 	$(DUDE) $(DUDEFLAGS) -U flash:w:$<
 
 # One-liner to compile the command-line client from arduino_cli.c
-$(CMDLINE): arduino_cli.cpp
-	g++ -std=c++1y -Wl,--no-as-needed -ldl -O -Wall arduino_cli.cpp ./libusb/libusb_dyn.c -o arduino_cli
+$(CMDLINE): src/arduino_cli.cpp
+	g++ -std=c++1y -Wl,--no-as-needed -ldl -O -Wall src/arduino_cli.cpp src/libusb/libusb_dyn.c -o arduino_cli
 
 # Housekeeping if you want it
 clean:
-	$(RM) *.o *.hex *.elf usbdrv/*.o arduino_cli
+	$(RM) src/*.o *.hex *.elf src/usbdrv/*.o arduino_cli
 
 # From .elf file to .hex
 %.hex: %.elf
@@ -40,7 +40,7 @@ main.elf: $(OBJECTS)
 
 # Without this dependance, .o files will not be recompiled if you change 
 # the config! I spent a few hours debugging because of this...
-$(OBJECTS): usbdrv/usbconfig-prototype.h
+$(OBJECTS): src/usbdrv/usbconfig-prototype.h
 
 # From C source to .o object file
 %.o: %.c	
