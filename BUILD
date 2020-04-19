@@ -11,9 +11,9 @@ config_setting(
 cc_library(
     name = "libusb",
     srcs = glob([
-        "libusb/**/*.cpp",
-        "libusb/**/*.c",
-        "libusb/**/*.h",
+        "src/libusb/**/*.cpp",
+        "src/libusb/**/*.c",
+        "src/libusb/**/*.h",
     ]),
     copts = [
         "-fdiagnostics-color",
@@ -26,8 +26,8 @@ cc_library(
 cc_binary(
     name = "arduino_cli",
     srcs = glob([
-        "arduino_cli.cpp",
-        "usb_device.h",
+        "src/arduino_cli.cpp",
+        "src/usb_device.h",
     ]),
     copts = [
         "-fdiagnostics-color",
@@ -40,11 +40,11 @@ cc_binary(
 cc_binary(
     name = "arduino_cli_mcu",
     srcs = glob([
-        "main.c",
-        "usbdrv/**/*.c",
-        "usbdrv/**/*.h",
-        "usbdrv/**/*.inc",
-        "usbdrv/**/*.S",
+        "src/main.c",
+        "src/usbdrv/**/*.c",
+        "src/usbdrv/**/*.h",
+        "src/usbdrv/**/*.inc",
+        "src/usbdrv/**/*.S",
     ]),
     copts = select({
         ":avr": [
@@ -53,7 +53,7 @@ cc_binary(
         ],
         "//conditions:default": [],
     }),
-    includes = ["usbdrv"],
+    includes = ["src/usbdrv"],
     linkopts = select({
         ":avr": [
             "-mmcu=$(MCU)",
