@@ -43,6 +43,8 @@ cc_binary(
         "main.c",
         "usbdrv/**/*.c",
         "usbdrv/**/*.h",
+        "usbdrv/**/*.inc",
+        "usbdrv/**/*.S",
     ]),
     copts = select({
         ":avr": [
