@@ -9,8 +9,11 @@ The tool consists of two parts: `arduino_cli` which is a Ubuntu executable and a
 
 ## Building
 
-* with `bazel` : `bazel build //...`
+
 * with `make`  : `make all`
+* with `bazel` (experimental):
+  * elf for avr: `bazel build --config=328p --verbose_failures //:arduino_cli_mcu`
+  * executable binary for PC: `bazel build --verbose_failures //:arduino_cli`
 
 ### Credits:
 
