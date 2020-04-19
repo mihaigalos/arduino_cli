@@ -49,6 +49,7 @@ cc_binary(
     copts = select({
         ":avr": [
             "-mmcu=$(MCU)",
+            "-Os",
             "-std=c11",
         ],
         "//conditions:default": [],
